@@ -5,3 +5,12 @@ class Mecanico(Empleado):
 
     def __str__(self):
         return f"Mecánico: {self.nombre} (ID: {self.id}, Score: {self.score})"
+
+  # Getter y Setter específico para Mecanico
+    def get_score(self):
+        return self._score
+
+    def set_score(self, score):
+        self._score = score
+
+
