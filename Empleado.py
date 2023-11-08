@@ -6,7 +6,6 @@ class Empleado:
         self._nacionalidad = nacionalidad
         self._salario = salario
 
-    @property
     def get_id(self):
         return self._id
 
@@ -21,3 +20,6 @@ class Empleado:
 
     def get_salario(self):
         return self._salario
+
+    def set_salario(self, salario):
+        self._salario = salario
