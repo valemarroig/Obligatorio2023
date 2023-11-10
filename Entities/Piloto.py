@@ -28,20 +28,20 @@ class Piloto(Empleado):
         return self._lesionado
 
     @property
-    def set_score(self, score):
-        return self._score=score
+    def set_score(self, nuevo_score):
+        self._score = nuevo_score
 
     @property
-    def set_num_auto(self, num_auto):
-        self._num_auto= num_auto
+    def set_num_auto(self, nuevo_num_auto):
+        self._num_auto= nuevo_num_auto
 
     @property
-    def set_puntaje_campeonato(self,puntaje_campeonato):
-        self._puntaje_campeonato=puntaje_campeonato):
+    def set_puntaje_campeonato(self, nuevo_puntaje_campeonato):
+        self._puntaje_campeonato=nuevo_puntaje_campeonato
 
     @property
-    def set._lesionado(self, lesionado):
-        self._lesionado=lesionado
+    def set_lesionado(self, nuevo_lesionado):
+        self._lesionado=nuevo_lesionado
 
     def __str__(self):
         return f"Piloto: {self.nombre} (ID: {self.id}, Numero de Auto: {self._num_auto}, Puntaje: {self._puntaje_campeonato}, Lesionado: {self._lesionado})"
