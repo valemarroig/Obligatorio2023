@@ -1,3 +1,9 @@
+from Entities.Piloto import Piloto
+from Entities.Mecanico import Mecanico
+from Entities.DirectorEquipo import DirectorEquipo
+from Entities.Empleado import Empleado
+from Entities.Auto import Auto
+
 def Simulacion_de_Carreras():
   
     # Crear empleados
