@@ -1,3 +1,5 @@
+from Empleado import Empleado
+
 class Piloto(Empleado):
     def __init__(self, id, nombre, fecha_nacimiento, nacionalidad, salario, score, num_auto, puntaje_campeonato, lesionado):
         super().__init__(id, nombre, fecha_nacimiento, nacionalidad, salario)
