@@ -1,39 +1,146 @@
+import datetime
 from Entities.Piloto import Piloto
 from Entities.Mecanico import Mecanico
 from Entities.DirectorEquipo import DirectorEquipo
 from Entities.Empleado import Empleado
 from Entities.Auto import Auto
 
-def Simulacion_de_Carreras():
-  
-    # Crear empleados
-    piloto1 = Piloto(id="12345678", nombre="Piloto1", fecha_nacimiento="01/01/1990", nacionalidad="Nacionalidad1", salario=50000, score=85, num_auto=1, puntaje_campeonato=0, lesionado=False)
-    piloto2 = Piloto(id="23456789", nombre="Piloto2", fecha_nacimiento="02/02/1995", nacionalidad="Nacionalidad2", salario=45000, score=78, num_auto=2, puntaje_campeonato=0, lesionado=False)
-    piloto_reserva = Piloto(id="34567890", nombre="PilotoReserva", fecha_nacimiento="03/03/1985", nacionalidad="Nacionalidad3", salario=40000, score=80, num_auto=3, puntaje_campeonato=0, lesionado=False)
+class SimulacionDeCarrera:
+    pilotos = []
+    pilotosReserva =[]
+    mecanicos = []
+    directores  = []
 
-    mecanico1 = Mecanico(id="45678901", nombre="Mecanico1", fecha_nacimiento="04/04/1992", nacionalidad="Nacionalidad4", salario=40000, score=75)
-    mecanico2 = Mecanico(id="56789012", nombre="Mecanico2", fecha_nacimiento="05/05/1988", nacionalidad="Nacionalidad5", salario=35000, score=70)
+    def menu_principal(self):
+            while True:
+                print("\n--- Menú Principal ---")
+                print("1. Alta de empleado")
+                print("2. Alta de auto")
+                print("3. Alta de equipo")
+                print("4. Simular carrera")
+                print("5. Realizar consultas")
+                print("6. Finalizar programa")
 
-    director_equipo1 = DirectorEquipo(id="67890123", nombre="Director1", fecha_nacimiento="06/06/1980", nacionalidad="Nacionalidad6", salario=80000)
+                opcion = input("Ingrese el número de la opción deseada: ")
 
-    # Crear autos
-    auto1 = Auto(modelo="Modelo1", año=2023, score=90)
+                if opcion == "1":
+                    self.alta_empleado()
+                elif opcion == "2":
+                    self.alta_auto()
+                elif opcion == "3":
+                    self.alta_equipo()
+                elif opcion == "4":
+                    self.simular_carrera()
+                elif opcion == "5":
+                    self.realizar_consultas()
+                elif opcion == "6":
+                    print("Programa finalizado.")
+                    break
+                else:
+                    print("Opción no válida. Intente de nuevo.")
 
-    # Crear equipo y asociar empleados y auto
-    equipo1 = Equipo(nombre="Equipo1", modelo_auto=auto1)
-    equipo1.asociar_empleado(piloto1)
-    equipo1.asociar_empleado(piloto2)
-    equipo1.asociar_empleado(piloto_reserva)
-    equipo1.asociar_empleado(mecanico1)
-    equipo1.asociar_empleado(mecanico2)
-    equipo1.asociar_empleado(director_equipo1)
 
-    # Simular carrera
-    pilotos_lesionados = []  # Lista vacía, ningún piloto lesionado
-    pilotos_abandonan = [2]  # Piloto2 abandona
-    pilotos_error_pits = []  # Ningún piloto comete error en pits
-    pilotos_penalidad = []  # Ningún piloto recibe penalidad
+    def validar_id(self, id):
+        if len(id) == 8:
+            return id.isdigit()
+        else:
+            return False  # Si la longitud no es 8
 
-    equipo1.simular_carrera(pilotos_lesionados, pilotos_abandonan, pilotos_error_pits, pilotos_penalidad)
+
+    def alta_empleado(self):
+        print("\n--- Alta de Empleado ---")
+
+        cedulaOk = False
+        cedula = input("Ingrese cédula: ")
+
+        if not validar_id(cedula):
+            while not cedulaOk:
+                cedula = input("Ingrese cédula: ")
+                cedulaOk = validar_id(cedula)
+
+        # Inputs sin validacion
+        nombre = input("Ingrese nombre: ")
+        fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")
+        nacionalidad = input("Ingrese nacionalidad: ")
+        salario = float(input("Ingrese salario: "))
+
+        if nacionalidad == "" or self.validate_date(fecha_nacimiento):
+            raise ValueError("Valores incorrectos!")
+        
+        # Validar el cargo
+        cargos_validos = ["1", "2", "3", "4"]
+        print("Cargos disponibles:")
+        print("1. Piloto")
+        print("2. Piloto de reserva")
+        print("3. Mecánico")
+        print("4. Director de equipo")
+
+        cargo = input("Ingrese el número del cargo: ")
+        while cargo not in cargos_validos:
+            print("Cargo no válido. Intente de nuevo.")
+            cargo = input("Ingrese el número del cargo: ")       
+        if cargo == 1:
+            pilotoCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario,  False)
+            self.pilotos.append(pilotoCreado)
+        elif cargo == 2:
+            pilotoReservaCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario, True)
+            self.pilotosReserva.append(pilotoReservaCreado)
+        elif cargo == 3:
+            mecanicoCreado = crearMecanico()
+            self.mecanicos.append(mecanicoCreado)
+        else:
+            directorCreado = crearDirector()
+            self.directores.append(directorCreado) 
+
+        print(f"Empleado {nombre} dado de alta con éxito.")
+
+    def crearDirector(cedula, nombre, fecha_nacimiento, nacionalidad, salario):
+        return DirectorEquipo(cedula,nombre,fecha_nacimiento,nacionalidad,salario)
+
+
+    def validate_date(date_string):
+        try:
+            # Parse the input string as a date
+            date_object = datetime.strptime(date_string, '%d/%m/%Y')
+            return True
+        except ValueError:
+            return False
+
+    def crearMecanico(cedula, nombre, fecha_nacimiento, nacionalidad, salario, score):
+        score = input("Ingrese la habilidad del piloto (del 1-99): ")
+        while score > 99 or score < 1:
+            print("Score no válido. Intente de nuevo.")
+            score = input("Ingrese la habilidad del piloto (del 1-99): ") 
+        return Mecanico(cedula,nombre, fecha_nacimiento,nacionalidad, salario, score)
+        
+
+    def crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario, esReserva):
+        num_auto = input("Ingrese numero de auto: ")
+        fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")  
+        nacionalidad = input("Ingrese nacionalidad: ")
+
+        estaLesionadoInput = input("Ingrese si esta lesionado, S= si, otra cosa= no: ")
+        estaLesionadoBool = False
+        
+        if num_auto == "":
+            raise ValueError("Falta numero auto")
+
+        if estaLesionadoInput == "S":
+            estaLesionadoBool = True
+
+        score = input("Ingrese la habilidad del piloto (del 1-99): ")
+        while score > 99 or score < 1:
+            print("Score no válido. Intente de nuevo.")
+            score = input("Ingrese la habilidad del piloto (del 1-99): ")  
+        
+        num_auto = input("Ingrese el numero de auto: ")
+        while not num_auto.isnumeric():
+            print("El numero del auto no es numerico.")
+            score = input("Ingrese el numero de auto: ")  
+
+        return Piloto(cedula,nombre,fecha_nacimiento,nacionalidad,salario,score, num_auto, 0,estaLesionadoBool)  
+
 
 if __name__ == "__main__":
+    programa = SimulacionDeCarrera()
+    programa.menu_principal()

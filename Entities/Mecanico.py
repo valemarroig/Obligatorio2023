@@ -1,4 +1,4 @@
-from Empleado import Empleado
+from .Empleado import Empleado
 
 class Mecanico(Empleado):
     def __init__(self, id, nombre, fecha_nacimiento, nacionalidad, salario, score):
