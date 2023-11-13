@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from Entities.Piloto import Piloto
 from Entities.Mecanico import Mecanico
 from Entities.DirectorEquipo import DirectorEquipo
@@ -46,17 +46,16 @@ class SimulacionDeCarrera:
         else:
             return False  # Si la longitud no es 8
 
-
     def alta_empleado(self):
         print("\n--- Alta de Empleado ---")
 
         cedulaOk = False
         cedula = input("Ingrese cédula: ")
 
-        if not validar_id(cedula):
+        if not self.validar_id(cedula):
             while not cedulaOk:
                 cedula = input("Ingrese cédula: ")
-                cedulaOk = validar_id(cedula)
+                cedulaOk = self.validar_id(cedula)
 
         # Inputs sin validacion
         nombre = input("Ingrese nombre: ")
@@ -64,7 +63,7 @@ class SimulacionDeCarrera:
         nacionalidad = input("Ingrese nacionalidad: ")
         salario = float(input("Ingrese salario: "))
 
-        if nacionalidad == "" or self.validate_date(fecha_nacimiento):
+        if nacionalidad == "" or not self.validate_date(fecha_nacimiento):
             raise ValueError("Valores incorrectos!")
         
         # Validar el cargo
@@ -86,19 +85,19 @@ class SimulacionDeCarrera:
             pilotoReservaCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario, True)
             self.pilotosReserva.append(pilotoReservaCreado)
         elif cargo == 3:
-            mecanicoCreado = crearMecanico()
+            mecanicoCreado = self.crearMecanico(cedula, nombre, fecha_nacimiento, nacionalidad, salario)
             self.mecanicos.append(mecanicoCreado)
         else:
-            directorCreado = crearDirector()
+            directorCreado = self.crearDirector(cedula, nombre, fecha_nacimiento, nacionalidad, salario)
             self.directores.append(directorCreado) 
 
         print(f"Empleado {nombre} dado de alta con éxito.")
 
-    def crearDirector(cedula, nombre, fecha_nacimiento, nacionalidad, salario):
+    def crearDirector(self, cedula, nombre, fecha_nacimiento, nacionalidad, salario):
         return DirectorEquipo(cedula,nombre,fecha_nacimiento,nacionalidad,salario)
 
 
-    def validate_date(date_string):
+    def validate_date(self, date_string):
         try:
             # Parse the input string as a date
             date_object = datetime.strptime(date_string, '%d/%m/%Y')
@@ -106,7 +105,7 @@ class SimulacionDeCarrera:
         except ValueError:
             return False
 
-    def crearMecanico(cedula, nombre, fecha_nacimiento, nacionalidad, salario, score):
+    def crearMecanico(self,cedula, nombre, fecha_nacimiento, nacionalidad, salario):
         score = input("Ingrese la habilidad del piloto (del 1-99): ")
         while score > 99 or score < 1:
             print("Score no válido. Intente de nuevo.")
@@ -114,7 +113,7 @@ class SimulacionDeCarrera:
         return Mecanico(cedula,nombre, fecha_nacimiento,nacionalidad, salario, score)
         
 
-    def crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario, esReserva):
+    def crearPiloto(self, cedula, nombre, fecha_nacimiento, nacionalidad, salario, esReserva):
         num_auto = input("Ingrese numero de auto: ")
         fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")  
         nacionalidad = input("Ingrese nacionalidad: ")
@@ -138,7 +137,7 @@ class SimulacionDeCarrera:
             print("El numero del auto no es numerico.")
             score = input("Ingrese el numero de auto: ")  
 
-        return Piloto(cedula,nombre,fecha_nacimiento,nacionalidad,salario,score, num_auto, 0,estaLesionadoBool)  
+        return Piloto(cedula,nombre,fecha_nacimiento,nacionalidad,salario,score, num_auto, 0,estaLesionadoBool, esReserva)  
 
 
 if __name__ == "__main__":

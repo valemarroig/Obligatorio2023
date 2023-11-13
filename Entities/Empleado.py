@@ -1,18 +1,11 @@
 class Empleado:
     def __init__(self, id, nombre, fecha_nacimiento, nacionalidad, salario):
-        
-        if not self.validar_id(id):
-            raise ValueError("La ID no es válida.")
-        
         self._id = id
         self._nombre = nombre
         self._fecha_nacimiento = fecha_nacimiento
         self._nacionalidad = nacionalidad
         self._salario = salario
-
-
-
-        
+     
 
     @property
     def get_id(self):
