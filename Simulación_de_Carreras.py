@@ -10,6 +10,7 @@ class SimulacionDeCarrera:
     pilotosReserva =[]
     mecanicos = []
     directores  = []
+    autos = []
 
     def menu_principal(self):
             while True:
@@ -39,6 +40,15 @@ class SimulacionDeCarrera:
                 else:
                     print("Opción no válida. Intente de nuevo.")
 
+    def alta_auto(self):
+        print("\n--- Alta de Auto ---")    
+        modelo = input("Ingrese modelo: ")
+        ano = int(input("Ingrese año: "))
+        score = int(input("Ingrese score: "))
+        if (modelo == "" or (score < 0) or ano <= 0):
+            raise ValueError("Error en datos ingresados para el auto")
+        auto = Auto(modelo,ano, score)
+        self.autos.append(auto)
 
     def validar_id(self, id):
         if len(id) == 8:
@@ -96,7 +106,6 @@ class SimulacionDeCarrera:
     def crearDirector(self, cedula, nombre, fecha_nacimiento, nacionalidad, salario):
         return DirectorEquipo(cedula,nombre,fecha_nacimiento,nacionalidad,salario)
 
-
     def validate_date(self, date_string):
         try:
             # Parse the input string as a date
@@ -106,7 +115,7 @@ class SimulacionDeCarrera:
             return False
 
     def crearMecanico(self,cedula, nombre, fecha_nacimiento, nacionalidad, salario):
-        score = input("Ingrese la habilidad del piloto (del 1-99): ")
+        score = int(input("Ingrese la habilidad del piloto (del 1-99): "))
         while score > 99 or score < 1:
             print("Score no válido. Intente de nuevo.")
             score = input("Ingrese la habilidad del piloto (del 1-99): ") 
