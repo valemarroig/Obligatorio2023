@@ -11,7 +11,8 @@ class SimulacionDeCarrera:
     mecanicos = []
     directores  = []
     autos = []
-
+    equipos = []
+    
     def menu_principal(self):
             while True:
                 print("\n--- Menú Principal ---")
@@ -50,6 +51,93 @@ class SimulacionDeCarrera:
         auto = Auto(modelo,ano, score)
         self.autos.append(auto)
 
+    def alta_equipo(self):
+        print("\n--- Alta de Equipo ---")
+                
+        if len(self.autos) < 1:
+            print("No hay autos disponibles para el equipo, agregue otro!")
+            return
+        
+        if len(self.pilotos) < 2:
+            print("No hay pilotos disponibles para el equipo, agregue otro!")
+            return
+        
+        if len(self.pilotosReserva) < 1:
+            print("No hay pilotos de reserva disponibles, agregue otro")
+            return
+
+        if len(self.mecanicos) < 8:
+            print("No hay mecanicos disponibles, se necesitan 8 y hay: " + str(len(self.mecanicos)))
+            return
+        
+        if len(self.directores) < 1:
+            print("No hay directores disponibles, agregue otro")
+            return
+        
+        nombre_equipo = input("Ingrese nombre del equipo: ")
+          
+               
+        # Seleccion de piloto
+        print("Pilotos titulares:", [p.cedula for p in self.pilotos])
+
+        pilotos_equipo = []
+        for i in range(2):
+            cedula_piloto_titular = input(f"Ingrese cedula del piloto titular {i + 1}: ")
+            if cedula_piloto_titular not in [p.cedula for p in self.pilotos]:
+                print("La cédula no corresponde a un piloto disponible.")
+                return
+            piloto_titular = next(p for p in self.pilotos if p.cedula == cedula_piloto_titular)
+            pilotos_equipo.append(piloto_titular)
+        
+        print("Pilotos de reserva:", [p.cedula for p in self.pilotos_reserva])
+        
+        cedula_piloto_reserva = input("Ingrese cedula del piloto de reserva: ")
+        if cedula_piloto_reserva not in [p.cedula for p in self.pilotos_reserva]:
+            print("La cédula no corresponde a un piloto de reserva disponible.")
+            return
+        piloto_reserva = next(p for p in self.pilotos_reserva if p.cedula == cedula_piloto_reserva)
+        pilotos_equipo.append(piloto_reserva)
+        
+        print("Directores:", [d.cedula for d in self.directores])
+        
+        idDir = input("Ingrese cedula del Director de equipo: ")
+        if idDir not in [d.cedula for d in self.directores]:
+            print("La cédula no corresponde a un director disponible.")
+            return
+        director_equipo = next(d for d in self.directores if d.cedula == idDir)
+        
+        
+        print("Mecánicos:", [m.cedula for m in self.mecanicos])
+        
+        mecanicos_equipo = []
+        for i in range(8):
+            cedula_mecanico = input(f"Ingrese cedula del mecánico {i + 1}: ")
+            if cedula_mecanico not in [m.cedula for m in self.mecanicos]:
+                print("La cédula no corresponde a un mecánico disponible.")
+                return
+            mecanico = next(m for m in self.mecanicos if m.cedula == cedula_mecanico)
+            mecanicos_equipo.append(mecanico)
+
+        # Agregar el equipo a la lista de equipos
+        nuevo_equipo = Equipo(nombre_equipo, [auto], pilotos_equipo, [piloto_reserva], mecanicos_equipo, director_equipo)
+        self.lista_equipos.append(nuevo_equipo)
+
+        print("Equipo dado de alta con éxito.")
+        
+        # Falta> si encuentro algo y hago append, removerlo de la lista original (esto es para que un piloto no sea parte de dos equipos por lo menos)
+        # Falta bucar auto por modelo y agregarlo al equipo
+        # Falta tomar todos los datos elegidos y hacer append a la lista de equipos con un nuevo equipo generado (en base a los parametros)
+        
+            
+
+        
+        
+        
+        
+        
+
+
+    
     def validar_id(self, id):
         if len(id) == 8:
             return id.isdigit()
