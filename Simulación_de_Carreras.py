@@ -216,7 +216,7 @@ class SimulacionDeCarrera:
 
         # Inputs sin validacion
         salarioOk = False
-        salario = float(input("Ingrese salario: "))
+        salario = input("Ingrese salario: ")
         
         if not self.validar_numero_positivo(salario):
             while not salarioOk:
