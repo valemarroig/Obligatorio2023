@@ -4,6 +4,7 @@ from Entities.Mecanico import Mecanico
 from Entities.DirectorEquipo import DirectorEquipo
 from Entities.Empleado import Empleado
 from Entities.Auto import Auto
+import re
 
 class SimulacionDeCarrera:
     pilotos = []
@@ -41,7 +42,7 @@ class SimulacionDeCarrera:
                 else:
                     print("Opción no válida. Intente de nuevo.")
 
-    def alta_auto(self):
+    def alta_auto(self): #OK
         print("\n--- Alta de Auto ---")    
         modelo = input("Ingrese modelo: ")
         ano = int(input("Ingrese año: "))
@@ -50,6 +51,7 @@ class SimulacionDeCarrera:
             raise ValueError("Error en datos ingresados para el auto")
         auto = Auto(modelo,ano, score)
         self.autos.append(auto)
+        print(f"Auto {modelo}, {ano} dado de alta con éxito.")
 
     def alta_equipo(self):
         print("\n--- Alta de Equipo ---")
@@ -136,13 +138,29 @@ class SimulacionDeCarrera:
         
         
 
-
+    def validar_fecha(self, date_string):
+        try:
+            # Parse the input string as a date
+            date_object = datetime.strptime(date_string, '%d/%m/%Y')
+            return True
+        except ValueError:
+            return False
     
     def validar_id(self, id):
         if len(id) == 8:
             return id.isdigit()
         else:
             return False  # Si la longitud no es 8
+        
+    def validar_texto(self, texto):
+    # Patrón regex para validar que el nombre contiene solo letras y espacios
+        patron = re.compile(r'^[a-zA-Z\s]+$')
+        
+        # Verificar si el nombre coincide con el patrón
+        if patron.match(texto):
+            return True
+        else:
+            return False
 
     def alta_empleado(self):
         print("\n--- Alta de Empleado ---")
@@ -152,17 +170,39 @@ class SimulacionDeCarrera:
 
         if not self.validar_id(cedula):
             while not cedulaOk:
+                print("Dato ingresado incorrecto. La cédula debe contener 8 dígitos.")
                 cedula = input("Ingrese cédula: ")
                 cedulaOk = self.validar_id(cedula)
 
-        # Inputs sin validacion
+        nombreOk = False
         nombre = input("Ingrese nombre: ")
-        fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")
-        nacionalidad = input("Ingrese nacionalidad: ")
-        salario = float(input("Ingrese salario: "))
 
-        if nacionalidad == "" or not self.validate_date(fecha_nacimiento):
-            raise ValueError("Valores incorrectos!")
+        if not self.validar_texto(nombre):
+            while not nombreOk:
+                print("Dato ingresado incorrecto. Nombre no puede estar vacío y solo debe contener letras y espacios.")
+                nombre = input("Ingrese nombre: ")
+                nombreOk = self.validar_texto(nombre)
+
+        nacimientoOk = False
+        fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")
+        
+        if not self.validar_fecha(fecha_nacimiento):
+            while not nacimientoOk:
+                print("Dato ingresado incorrecto. Fecha no puede estar vacía o tener el formato incorrecto.")
+                fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")
+                nacimientoOk = self.validar_fecha(fecha_nacimiento)
+        
+        nacionalidadOk = False
+        nacionalidad = input("Ingrese nacionalidad: ")
+        
+        if not self.validar_texto(nacionalidad):
+            while not nacionalidadOk:
+                print("Dato ingresado incorrecto. Nacionalidad no puede estar vacía y solo debe contener letras y espacios.")
+                nacionalidad = input("Ingrese nacionalidad: ")
+                nacionalidadOk = self.validar_texto(nacionalidad)
+
+        # Inputs sin validacion
+        salario = float(input("Ingrese salario: "))
         
         # Validar el cargo
         cargos_validos = ["1", "2", "3", "4"]
@@ -193,14 +233,6 @@ class SimulacionDeCarrera:
 
     def crearDirector(self, cedula, nombre, fecha_nacimiento, nacionalidad, salario):
         return DirectorEquipo(cedula,nombre,fecha_nacimiento,nacionalidad,salario)
-
-    def validate_date(self, date_string):
-        try:
-            # Parse the input string as a date
-            date_object = datetime.strptime(date_string, '%d/%m/%Y')
-            return True
-        except ValueError:
-            return False
 
     def crearMecanico(self,cedula, nombre, fecha_nacimiento, nacionalidad, salario):
         score = int(input("Ingrese la habilidad del piloto (del 1-99): "))
