@@ -161,6 +161,19 @@ class SimulacionDeCarrera:
             return True
         else:
             return False
+        
+    def validar_numero_positivo(valor):
+        try:
+            # Intenta convertir el valor a un número
+            numero = float(valor)
+            # Verifica si el número es mayor a 0
+            if numero >= 0:
+                return True
+            else:
+                return False
+        except ValueError:
+            # Si la conversión a número falla, el input no es un número válido
+            return False
 
     def alta_empleado(self):
         print("\n--- Alta de Empleado ---")
@@ -202,8 +215,15 @@ class SimulacionDeCarrera:
                 nacionalidadOk = self.validar_texto(nacionalidad)
 
         # Inputs sin validacion
+        salarioOk = False
         salario = float(input("Ingrese salario: "))
         
+        if not self.validar_numero_positivo(salario):
+            while not salarioOk:
+                print("Dato ingresado incorrecto. Salario no puede estar vacío y debe ser un número positivo")
+                salario = input("Ingrese salario: ")
+                salarioOk = self.validar_numero_positivo(salario)
+
         # Validar el cargo
         cargos_validos = ["1", "2", "3", "4"]
         print("Cargos disponibles:")
@@ -217,6 +237,14 @@ class SimulacionDeCarrera:
             print("Cargo no válido. Intente de nuevo.")
             cargo = input("Ingrese el número del cargo: ")       
         if cargo == 1:
+            scoreOk = False
+            score = input("Ingresar score: ")
+            if not self.validar_numero_positivo(score):
+                while not scoreOk:
+                    print("Dato ingresado incorrecto. Score no puede estar vacío y debe ser un número positivo")
+                    score = input("Ingrese salario: ")
+                    scoreOk = self.validar_numero_positivo(score)
+
             pilotoCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario,  False)
             self.pilotos.append(pilotoCreado)
         elif cargo == 2:
