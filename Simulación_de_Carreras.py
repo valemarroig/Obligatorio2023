@@ -128,6 +128,14 @@ class SimulacionDeCarrera:
         
         # Falta> si encuentro algo y hago append, removerlo de la lista original (esto es para que un piloto no sea parte de dos equipos por lo menos)
         # Falta bucar auto por modelo y agregarlo al equipo
+        autos_equipo = []
+        for i in range(8):
+            matricula_auto = input(f"Ingrese matricula del auto {i + 1}: ")
+            if matricula_auto not in [m.matricula for m in self.autos]:
+                print("La matricula no corresponde a un auto disponible.")
+                return
+            auto = next(m for m in self.autos if m.matricula == matricula_auto)
+            autos_equipo.append(auto)
         # Falta tomar todos los datos elegidos y hacer append a la lista de equipos con un nuevo equipo generado (en base a los parametros)
         
             
