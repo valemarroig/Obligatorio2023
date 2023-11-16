@@ -4,6 +4,7 @@ from Entities.Mecanico import Mecanico
 from Entities.DirectorEquipo import DirectorEquipo
 from Entities.Empleado import Empleado
 from Entities.Auto import Auto
+from Entities.Equipo import Equipo
 import re
 
 class SimulacionDeCarrera:
@@ -170,18 +171,13 @@ class SimulacionDeCarrera:
         else:
             return False
         
-    def validar_numero_positivo(valor):
-        try:
-            # Intenta convertir el valor a un número
+    def validar_numero_positivo(self, valor):
+        es_numero_positivo = False
+        if valor.isdigit():
             numero = float(valor)
-            # Verifica si el número es mayor a 0
             if numero >= 0:
-                return True
-            else:
-                return False
-        except ValueError:
-            # Si la conversión a número falla, el input no es un número válido
-            return False
+                es_numero_positivo = True
+        return es_numero_positivo
 
     def alta_empleado(self):
         print("\n--- Alta de Empleado ---")
@@ -189,7 +185,7 @@ class SimulacionDeCarrera:
         cedulaOk = False
         cedula = input("Ingrese cédula: ")
 
-        if not self.validar_id(cedula):
+        if not self.validar_id(cedula):  #falta validar que no se repita
             while not cedulaOk:
                 print("Dato ingresado incorrecto. La cédula debe contener 8 dígitos.")
                 cedula = input("Ingrese cédula: ")
@@ -228,7 +224,7 @@ class SimulacionDeCarrera:
         
         if not self.validar_numero_positivo(salario):
             while not salarioOk:
-                print("Dato ingresado incorrecto. Salario no puede estar vacío y debe ser un número positivo")
+                print("Dato ingresado incorrecto. Salario no puede estar vacío y debe ser un número positivo.")
                 salario = input("Ingrese salario: ")
                 salarioOk = self.validar_numero_positivo(salario)
 
@@ -244,17 +240,19 @@ class SimulacionDeCarrera:
         while cargo not in cargos_validos:
             print("Cargo no válido. Intente de nuevo.")
             cargo = input("Ingrese el número del cargo: ")       
+        
         if cargo == 1:
-            scoreOk = False
-            score = input("Ingresar score: ")
-            if not self.validar_numero_positivo(score):
-                while not scoreOk:
-                    print("Dato ingresado incorrecto. Score no puede estar vacío y debe ser un número positivo")
-                    score = input("Ingrese salario: ")
-                    scoreOk = self.validar_numero_positivo(score)
+            #scoreOk = False
+            #score = input("Ingresar score: ")
+            #if not self.validar_numero_positivo(score):
+            #    while not scoreOk:
+            #        print("Dato ingresado incorrecto. Score no puede estar vacío y debe ser un número positivo.")
+            #        score = input("Ingrese score: ")
+            #        scoreOk = self.validar_numero_positivo(score)
 
             pilotoCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario,  False)
             self.pilotos.append(pilotoCreado)
+
         elif cargo == 2:
             pilotoReservaCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario, True)
             self.pilotosReserva.append(pilotoReservaCreado)
