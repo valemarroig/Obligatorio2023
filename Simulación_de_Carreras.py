@@ -2,7 +2,6 @@ from datetime import datetime
 from Entities.Piloto import Piloto
 from Entities.Mecanico import Mecanico
 from Entities.DirectorEquipo import DirectorEquipo
-from Entities.Empleado import Empleado
 from Entities.Auto import Auto
 from Entities.Equipo import Equipo
 from Exceptions.InformaciónInválida import InformacionInvalida
@@ -17,43 +16,59 @@ class SimulacionDeCarrera:
     equipos = []
     
     def menu_principal(self):
-            while True:
-                print("\n--- Menú Principal ---")
-                print("1. Alta de empleado")
-                print("2. Alta de auto")
-                print("3. Alta de equipo")
-                print("4. Simular carrera")
-                print("5. Realizar consultas")
-                print("6. Finalizar programa")
+        while True:
+            print("\n--- Menú Principal ---")
+            print("1. Alta de empleado")
+            print("2. Alta de auto")
+            print("3. Alta de equipo")
+            print("4. Simular carrera")
+            print("5. Realizar consultas")
+            print("6. Finalizar programa")
 
-                opcion = input("Ingrese el número de la opción deseada: ")
+            opcion = input("Ingrese el número de la opción deseada: ")
 
-                if opcion == "1":
-                    self.alta_empleado()
-                elif opcion == "2":
-                    self.alta_auto()
-                elif opcion == "3":
-                    self.alta_equipo()
-                elif opcion == "4":
-                    self.simular_carrera()
-                elif opcion == "5":
-                    self.realizar_consultas()
-                elif opcion == "6":
-                    print("Programa finalizado.")
-                    break
-                else:
-                    print("Opción no válida. Intente de nuevo.")
+            if opcion == "1":
+                self.alta_empleado()
+            elif opcion == "2":
+                self.alta_auto()
+            elif opcion == "3":
+                self.alta_equipo()
+            elif opcion == "4":
+                self.simular_carrera()
+            elif opcion == "5":
+                self.realizar_consultas()
+            elif opcion == "6":
+                print("Programa finalizado.")
+                break
+            else:
+                print("Opción no válida. Intente de nuevo.")
 
     def alta_auto(self): #OK
-        print("\n--- Alta de Auto ---")    
-        modelo = input("Ingrese modelo: ")
-        ano = int(input("Ingrese año: "))
-        score = int(input("Ingrese score: "))
-        if (modelo == "" or (score < 0) or ano <= 0):
-            raise ValueError("Error en datos ingresados para el auto")
-        auto = Auto(modelo,ano, score)
-        self.autos.append(auto)
-        print(f"Auto {modelo}, {ano} dado de alta con éxito.")
+        while True:
+            try:
+                print("\n--- Alta de Auto ---")    
+                modelo = input("Ingrese modelo: ") #validar que no se repita el modelo (o mismo modelo y año al mismo tiempo)
+                if not modelo.strip():
+                    raise InformacionInvalida(400, "Dato ingresado incorrecto. El modelo no puede estar vacío.")
+                
+                anio = input("Ingrese año: ")
+                if not self.validar_anio(anio):
+                    raise InformacionInvalida(400, "El año ingresado no es válido.")
+                
+                score = input("Ingrese score: ")
+                if not self.validar_num_entero_1_99(score):
+                    raise InformacionInvalida(400, "Dato ingresado incorrecto. Score no puede estar vacío y debe ser un número entero en rango 1-99.")
+                
+                autoCreado = Auto(modelo,anio, score)
+                self.autos.append(autoCreado)
+                print(f"Auto {modelo}, {anio} dado de alta con éxito.")
+                break
+            
+            except InformacionInvalida as e:
+                print(f"Error: {e}")
+                print("Por favor, ingrese la información nuevamente.")
+                input ("Presionar Enter para volver al menú principal.")
+                break
 
     def alta_equipo(self):
         print("\n--- Alta de Equipo ---")
@@ -79,7 +94,9 @@ class SimulacionDeCarrera:
             return
         
         nombre_equipo = input("Ingrese nombre del equipo: ")
-          
+        if not self.validar_texto(nombre_equipo):
+            raise InformacionInvalida(400, "Dato ingresado incorrecto. Nombre de equipo no puede estar vacío y solo debe contener letras y espacios.")
+                  
                
         # Seleccion de piloto
         print("Pilotos titulares:", [p.cedula for p in self.pilotos])
@@ -124,7 +141,7 @@ class SimulacionDeCarrera:
 
         # Agregar el equipo a la lista de equipos
         nuevo_equipo = Equipo(nombre_equipo, [auto], pilotos_equipo, [piloto_reserva], mecanicos_equipo, director_equipo)
-        self.lista_equipos.append(nuevo_equipo)
+        self.equipos.append(nuevo_equipo)
 
         print("Equipo dado de alta con éxito.")
         
@@ -146,7 +163,14 @@ class SimulacionDeCarrera:
         
         
         
-        
+    def validar_anio(self, anio):
+        try:
+            anioIngresado = int(anio)
+            anioActual = datetime.now().year
+            if 0 <= anioIngresado <= anioActual:
+                return True
+        except ValueError:
+            return False
 
     def validar_fecha(self, date_string):
         try:
@@ -157,19 +181,17 @@ class SimulacionDeCarrera:
             return False
     
     def validar_id(self, id):
-        if len(id) == 8:
-            return id.isdigit()
-        else:
-            return False  # Si la longitud no es 8
+        es_id_valido = False
+        if id.isdigit() and len(id) == 8:
+            es_id_valido = True
+        return es_id_valido  
         
     def validar_texto(self, texto):
-    # Patrón regex para validar que el nombre contiene solo letras y espacios
+        es_texto = False
         patron = re.compile(r'^[a-zA-Z\s]+$')
-        # Verificar si el nombre coincide con el patrón
-        if patron.match(texto):
-            return True
-        else:
-            return False
+        if patron.match(texto) and texto.strip():
+            es_texto = True
+        return es_texto
         
     def validar_numero_positivo(self, valor):
         es_numero_positivo = False
@@ -192,8 +214,8 @@ class SimulacionDeCarrera:
             try:
                 print("\n--- Alta de Empleado ---")
 
-                cedula = input("Ingrese cédula: ")
-                if not self.validar_id(cedula):  #falta validar que no se repita
+                cedula = input("Ingrese cédula: ")  #validar que no se repita la cedula
+                if not self.validar_id(cedula):  
                     raise InformacionInvalida(400, "Dato ingresado incorrecto. La cédula debe contener 8 dígitos numéricos.")
                     
                 nombre = input("Ingrese nombre: ")
@@ -251,11 +273,11 @@ class SimulacionDeCarrera:
         return DirectorEquipo(cedula, nombre, fecha_nacimiento, nacionalidad, salario)
 
     def crearMecanico(self,cedula, nombre, fecha_nacimiento, nacionalidad, salario):
-        score = int(input("Ingrese la habilidad del piloto (del 1-99): "))
-        while score > 99 or score < 1:
-            print("Score no válido. Intente de nuevo.")
-            score = input("Ingrese la habilidad del piloto (del 1-99): ") 
-        return Mecanico(cedula,nombre, fecha_nacimiento,nacionalidad, salario, score)
+        score = input("Ingresar score: ")
+        if not self.validar_num_entero_1_99(score):
+            raise InformacionInvalida(400, "Dato ingresado incorrecto. Score no puede estar vacío y debe ser un número entero en rango 1-99.")
+        
+        return Mecanico(cedula, nombre, fecha_nacimiento, nacionalidad, salario, score)
 
     def crearPiloto(self, cedula, nombre, fecha_nacimiento, nacionalidad, salario, esReserva):
         score = input("Ingresar score: ")
