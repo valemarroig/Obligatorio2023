@@ -164,7 +164,6 @@ class SimulacionDeCarrera:
     def validar_texto(self, texto):
     # Patrón regex para validar que el nombre contiene solo letras y espacios
         patron = re.compile(r'^[a-zA-Z\s]+$')
-        
         # Verificar si el nombre coincide con el patrón
         if patron.match(texto):
             return True
@@ -178,6 +177,14 @@ class SimulacionDeCarrera:
             if numero >= 0:
                 es_numero_positivo = True
         return es_numero_positivo
+    
+    def validar_num_entero_1_99(self, valor):
+        es_entero_1_99 = False
+        if valor.isdigit():
+            numero = int(valor)
+            if 1<= numero <= 99:
+                es_entero_1_99 = True
+        return es_entero_1_99
 
     def alta_empleado(self):
         print("\n--- Alta de Empleado ---")
@@ -218,7 +225,6 @@ class SimulacionDeCarrera:
                 nacionalidad = input("Ingrese nacionalidad: ")
                 nacionalidadOk = self.validar_texto(nacionalidad)
 
-        # Inputs sin validacion
         salarioOk = False
         salario = input("Ingrese salario: ")
         
@@ -241,22 +247,14 @@ class SimulacionDeCarrera:
             print("Cargo no válido. Intente de nuevo.")
             cargo = input("Ingrese el número del cargo: ")       
         
-        if cargo == 1:
-            #scoreOk = False
-            #score = input("Ingresar score: ")
-            #if not self.validar_numero_positivo(score):
-            #    while not scoreOk:
-            #        print("Dato ingresado incorrecto. Score no puede estar vacío y debe ser un número positivo.")
-            #        score = input("Ingrese score: ")
-            #        scoreOk = self.validar_numero_positivo(score)
-
+        if cargo == "1":    
             pilotoCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario,  False)
             self.pilotos.append(pilotoCreado)
 
-        elif cargo == 2:
+        elif cargo == "2":
             pilotoReservaCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario, True)
             self.pilotosReserva.append(pilotoReservaCreado)
-        elif cargo == 3:
+        elif cargo == "3":
             mecanicoCreado = self.crearMecanico(cedula, nombre, fecha_nacimiento, nacionalidad, salario)
             self.mecanicos.append(mecanicoCreado)
         else:
@@ -277,28 +275,27 @@ class SimulacionDeCarrera:
         
 
     def crearPiloto(self, cedula, nombre, fecha_nacimiento, nacionalidad, salario, esReserva):
-        num_auto = input("Ingrese numero de auto: ")
-        fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")  
-        nacionalidad = input("Ingrese nacionalidad: ")
+        scoreOk = False
+        score = input("Ingresar score: ")
+        if not self.validar_num_entero_1_99(score):
+            while not scoreOk:
+                print("Dato ingresado incorrecto. Score no puede estar vacío y debe ser un número entero en rango 1-99.")
+                score = input("Ingrese score: ")
+                scoreOk = self.validar_num_entero_1_99(score)
+        
+        num_autoOk = False
+        num_auto = input("Ingrese número de auto: ")
+        if not self.validar_num_entero_1_99(num_auto):
+            while not num_autoOk:
+                print("Dato ingresado incorrecto. Número de auto no puede estar vacío y debe ser un número entero en rango 1-99.")
+                num_auto = input("Ingrese número de auto: ")
+                num_autoOk = self.validar_num_entero_1_99(num_auto)
 
         estaLesionadoInput = input("Ingrese si esta lesionado, S= si, otra cosa= no: ")
         estaLesionadoBool = False
-        
-        if num_auto == "":
-            raise ValueError("Falta numero auto")
 
         if estaLesionadoInput == "S":
             estaLesionadoBool = True
-
-        score = input("Ingrese la habilidad del piloto (del 1-99): ")
-        while score > 99 or score < 1:
-            print("Score no válido. Intente de nuevo.")
-            score = input("Ingrese la habilidad del piloto (del 1-99): ")  
-        
-        num_auto = input("Ingrese el numero de auto: ")
-        while not num_auto.isnumeric():
-            print("El numero del auto no es numerico.")
-            score = input("Ingrese el numero de auto: ")  
 
         return Piloto(cedula,nombre,fecha_nacimiento,nacionalidad,salario,score, num_auto, 0,estaLesionadoBool, esReserva)  
 
