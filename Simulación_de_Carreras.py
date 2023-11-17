@@ -5,6 +5,7 @@ from Entities.DirectorEquipo import DirectorEquipo
 from Entities.Empleado import Empleado
 from Entities.Auto import Auto
 from Entities.Equipo import Equipo
+from Exceptions.InformaciónInválida import InformacionInvalida
 import re
 
 class SimulacionDeCarrera:
@@ -187,84 +188,67 @@ class SimulacionDeCarrera:
         return es_entero_1_99
 
     def alta_empleado(self):
-        print("\n--- Alta de Empleado ---")
+        while True:
+            try:
+                print("\n--- Alta de Empleado ---")
 
-        cedulaOk = False
-        cedula = input("Ingrese cédula: ")
-
-        if not self.validar_id(cedula):  #falta validar que no se repita
-            while not cedulaOk:
-                print("Dato ingresado incorrecto. La cédula debe contener 8 dígitos.")
                 cedula = input("Ingrese cédula: ")
-                cedulaOk = self.validar_id(cedula)
-
-        nombreOk = False
-        nombre = input("Ingrese nombre: ")
-
-        if not self.validar_texto(nombre):
-            while not nombreOk:
-                print("Dato ingresado incorrecto. Nombre no puede estar vacío y solo debe contener letras y espacios.")
+                if not self.validar_id(cedula):  #falta validar que no se repita
+                    raise InformacionInvalida(400, "Dato ingresado incorrecto. La cédula debe contener 8 dígitos numéricos.")
+                    
                 nombre = input("Ingrese nombre: ")
-                nombreOk = self.validar_texto(nombre)
-
-        nacimientoOk = False
-        fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")
-        
-        if not self.validar_fecha(fecha_nacimiento):
-            while not nacimientoOk:
-                print("Dato ingresado incorrecto. Fecha no puede estar vacía o tener el formato incorrecto.")
+                if not self.validar_texto(nombre):
+                    raise InformacionInvalida(400, "Dato ingresado incorrecto. Nombre no puede estar vacío y solo debe contener letras y espacios.")
+                
                 fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")
-                nacimientoOk = self.validar_fecha(fecha_nacimiento)
-        
-        nacionalidadOk = False
-        nacionalidad = input("Ingrese nacionalidad: ")
-        
-        if not self.validar_texto(nacionalidad):
-            while not nacionalidadOk:
-                print("Dato ingresado incorrecto. Nacionalidad no puede estar vacía y solo debe contener letras y espacios.")
+                if not self.validar_fecha(fecha_nacimiento):
+                    raise InformacionInvalida(400, "Dato ingresado incorrecto. Fecha no puede estar vacía y debe tener el formato incorrecto.")
+                
                 nacionalidad = input("Ingrese nacionalidad: ")
-                nacionalidadOk = self.validar_texto(nacionalidad)
-
-        salarioOk = False
-        salario = input("Ingrese salario: ")
-        
-        if not self.validar_numero_positivo(salario):
-            while not salarioOk:
-                print("Dato ingresado incorrecto. Salario no puede estar vacío y debe ser un número positivo.")
+                if not self.validar_texto(nacionalidad):
+                    raise InformacionInvalida(400, "Dato ingresado incorrecto. Nacionalidad no puede estar vacía y solo debe contener letras y espacios.")
+                    
                 salario = input("Ingrese salario: ")
-                salarioOk = self.validar_numero_positivo(salario)
+                if not self.validar_numero_positivo(salario):
+                    raise InformacionInvalida(400, "Dato ingresado incorrecto. Salario no puede estar vacío y debe ser un número positivo.")
 
-        # Validar el cargo
-        cargos_validos = ["1", "2", "3", "4"]
-        print("Cargos disponibles:")
-        print("1. Piloto")
-        print("2. Piloto de reserva")
-        print("3. Mecánico")
-        print("4. Director de equipo")
+                # Validar el cargo
+                cargos_validos = ["1", "2", "3", "4"]
+                print("Cargos disponibles:")
+                print("1. Piloto")
+                print("2. Piloto de reserva")
+                print("3. Mecánico")
+                print("4. Director de equipo")
 
-        cargo = input("Ingrese el número del cargo: ")
-        while cargo not in cargos_validos:
-            print("Cargo no válido. Intente de nuevo.")
-            cargo = input("Ingrese el número del cargo: ")       
-        
-        if cargo == "1":    
-            pilotoCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario,  False)
-            self.pilotos.append(pilotoCreado)
+                cargo = input("Ingrese el número del cargo: ")
+                if cargo not in cargos_validos:
+                    raise InformacionInvalida(400, "Cargo no válido. Ingrese una de las opciones presentadas.")    
+                
+                if cargo == "1":    
+                    pilotoCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario,  False)
+                    self.pilotos.append(pilotoCreado)
+                elif cargo == "2":
+                    pilotoReservaCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario, True)
+                    self.pilotosReserva.append(pilotoReservaCreado)
+                elif cargo == "3":
+                    mecanicoCreado = self.crearMecanico(cedula, nombre, fecha_nacimiento, nacionalidad, salario)
+                    self.mecanicos.append(mecanicoCreado)
+                else:
+                    directorCreado = self.crearDirector(cedula, nombre, fecha_nacimiento, nacionalidad, salario)
+                    self.directores.append(directorCreado) 
 
-        elif cargo == "2":
-            pilotoReservaCreado = self.crearPiloto(cedula, nombre, fecha_nacimiento, nacionalidad, salario, True)
-            self.pilotosReserva.append(pilotoReservaCreado)
-        elif cargo == "3":
-            mecanicoCreado = self.crearMecanico(cedula, nombre, fecha_nacimiento, nacionalidad, salario)
-            self.mecanicos.append(mecanicoCreado)
-        else:
-            directorCreado = self.crearDirector(cedula, nombre, fecha_nacimiento, nacionalidad, salario)
-            self.directores.append(directorCreado) 
+                print(f"Empleado {nombre} dado de alta con éxito.")
+                break
+            
+            except InformacionInvalida as e:
+                print(f"Error: {e}")
+                print("Por favor, ingrese la información nuevamente.")
+                input ("Presionar Enter para volver al menú principal.")
+                break
 
-        print(f"Empleado {nombre} dado de alta con éxito.")
 
     def crearDirector(self, cedula, nombre, fecha_nacimiento, nacionalidad, salario):
-        return DirectorEquipo(cedula,nombre,fecha_nacimiento,nacionalidad,salario)
+        return DirectorEquipo(cedula, nombre, fecha_nacimiento, nacionalidad, salario)
 
     def crearMecanico(self,cedula, nombre, fecha_nacimiento, nacionalidad, salario):
         score = int(input("Ingrese la habilidad del piloto (del 1-99): "))
@@ -272,32 +256,17 @@ class SimulacionDeCarrera:
             print("Score no válido. Intente de nuevo.")
             score = input("Ingrese la habilidad del piloto (del 1-99): ") 
         return Mecanico(cedula,nombre, fecha_nacimiento,nacionalidad, salario, score)
-        
 
     def crearPiloto(self, cedula, nombre, fecha_nacimiento, nacionalidad, salario, esReserva):
-        scoreOk = False
         score = input("Ingresar score: ")
         if not self.validar_num_entero_1_99(score):
-            while not scoreOk:
-                print("Dato ingresado incorrecto. Score no puede estar vacío y debe ser un número entero en rango 1-99.")
-                score = input("Ingrese score: ")
-                scoreOk = self.validar_num_entero_1_99(score)
+            raise InformacionInvalida(400, "Dato ingresado incorrecto. Score no puede estar vacío y debe ser un número entero en rango 1-99.")
         
-        num_autoOk = False
         num_auto = input("Ingrese número de auto: ")
         if not self.validar_num_entero_1_99(num_auto):
-            while not num_autoOk:
-                print("Dato ingresado incorrecto. Número de auto no puede estar vacío y debe ser un número entero en rango 1-99.")
-                num_auto = input("Ingrese número de auto: ")
-                num_autoOk = self.validar_num_entero_1_99(num_auto)
+            raise InformacionInvalida(400, "Dato ingresado incorrecto. Número de auto no puede estar vacío y debe ser un número entero en rango 1-99.")
 
-        estaLesionadoInput = input("Ingrese si esta lesionado, S= si, otra cosa= no: ")
-        estaLesionadoBool = False
-
-        if estaLesionadoInput == "S":
-            estaLesionadoBool = True
-
-        return Piloto(cedula,nombre,fecha_nacimiento,nacionalidad,salario,score, num_auto, 0,estaLesionadoBool, esReserva)  
+        return Piloto(cedula,nombre,fecha_nacimiento,nacionalidad,salario,score, num_auto, 0, False, esReserva)  
 
 
 if __name__ == "__main__":
