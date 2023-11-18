@@ -1,4 +1,6 @@
 from .Empleado import Empleado
+from .Auto import Auto
+
 
 class Piloto(Empleado):
     def __init__(self, id, nombre, fecha_nacimiento, nacionalidad, salario, score, num_auto, puntaje_campeonato, lesionado, esReserva):
@@ -8,9 +10,11 @@ class Piloto(Empleado):
         self.puntaje_campeonato = puntaje_campeonato  # Puntaje acumulado en el campeonato
         self.lesionado = lesionado  # Booleano que indica si el piloto está lesionado o nos
         self.esReserva = esReserva
+        self.errores_en_pits = 0
+        self.penalidad_infringir_norma = 0
         
     def __str__(self):
-        return f"Piloto: {self.nombre} (ID: {self.id}, Número de Auto: {self.num_auto}, Puntaje: {self.puntaje_campeonato}, Lesionado: {self.lesionado})"
+        return f"Piloto: {super().nombre} (ID: {super().id}, Número de Auto: {self.num_auto}, Puntaje: {self.puntaje_campeonato}, Lesionado: {self.lesionado})"
 
     @property
     def get_score(self):
@@ -43,8 +47,22 @@ class Piloto(Empleado):
     @property
     def set_lesionado(self, nuevo_lesionado):
         self._lesionado=nuevo_lesionado
+        
+        
+    def calcular_score_final(self, score_auto):
+        if self.lesionado:
+            self.puntaje_campeonato = 0
+        else:
+            self.puntaje_campeonato = (score_auto + self.score-5 * self.errores_en_pits - 8 * self.penalidad_infringir_norma)
 
+    def recibir_penalidad_pits(self):
+        self.errores_en_pits += 1
 
+    def recibir_penalidad_norma(self):
+        self.penalidad_infringir_norma += 1
+
+    def asignar_puntaje(self,score_final):
+        self.puntaje_campeonato += score_final
         
         
     

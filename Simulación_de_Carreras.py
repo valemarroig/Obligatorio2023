@@ -6,39 +6,44 @@ from Entities.Auto import Auto
 from Entities.Equipo import Equipo
 from Exceptions.InformaciónInválida import InformacionInvalida
 import random
-#import re
+
+import re
 
 class SimulacionDeCarrera:
     # para hacer pruebas: seleccionar y ctrl+/ para descomentar
-    # piloto1 = Piloto(id="12345678", nombre="Piloto1", fecha_nacimiento="01/01/1990", nacionalidad="Nacionalidad1", salario=50000, score=85, num_auto=1, puntaje_campeonato=0, lesionado=False, esReserva=False)
-    # piloto2 = Piloto(id="23456789", nombre="Piloto2", fecha_nacimiento="02/02/1991", nacionalidad="Nacionalidad2", salario=55000, score=78, num_auto=2, puntaje_campeonato=0, lesionado=False, esReserva=False)
-    # piloto3 = Piloto(id="34567890", nombre="Piloto3", fecha_nacimiento="03/03/1992", nacionalidad="Nacionalidad3", salario=60000, score=92, num_auto=3, puntaje_campeonato=0, lesionado=False, esReserva=True)
-    # piloto4 = Piloto(id="45678901", nombre="Piloto4", fecha_nacimiento="04/04/1993", nacionalidad="Nacionalidad4", salario=65000, score=88, num_auto=4, puntaje_campeonato=0, lesionado=False, esReserva=False)
-    # piloto5 = Piloto(id="56789012", nombre="Piloto5", fecha_nacimiento="05/05/1994", nacionalidad="Nacionalidad5", salario=70000, score=75, num_auto=5, puntaje_campeonato=0, lesionado=False, esReserva=False)
-    # piloto6 = Piloto(id="67890123", nombre="Piloto6", fecha_nacimiento="06/06/1995", nacionalidad="Nacionalidad6", salario=75000, score=95, num_auto=6, puntaje_campeonato=0, lesionado=False, esReserva=True)
-    # mecanico1 = Mecanico(id="12345678", nombre="Mecanico1", fecha_nacimiento="01/01/1990", nacionalidad="Nacionalidad1", salario=50000, score=85)
-    # mecanico2 = Mecanico(id="23456789", nombre="Mecanico2", fecha_nacimiento="02/02/1991", nacionalidad="Nacionalidad2", salario=55000, score=78)
-    # mecanico3 = Mecanico(id="34567890", nombre="Mecanico3", fecha_nacimiento="03/03/1992", nacionalidad="Nacionalidad3", salario=60000, score=92)
-    # mecanico4 = Mecanico(id="45678901", nombre="Mecanico4", fecha_nacimiento="04/04/1993", nacionalidad="Nacionalidad4", salario=65000, score=88)
-    # mecanico5 = Mecanico(id="56789012", nombre="Mecanico5", fecha_nacimiento="05/05/1994", nacionalidad="Nacionalidad5", salario=70000, score=75)
-    # mecanico6 = Mecanico(id="67890123", nombre="Mecanico6", fecha_nacimiento="06/06/1995", nacionalidad="Nacionalidad6", salario=75000, score=91)
-    # mecanico7 = Mecanico(id="78901234", nombre="Mecanico7", fecha_nacimiento="07/07/1996", nacionalidad="Nacionalidad7", salario=80000, score=83)
-    # mecanico8 = Mecanico(id="89012345", nombre="Mecanico8", fecha_nacimiento="08/08/1997", nacionalidad="Nacionalidad8", salario=85000, score=79)
-    # mecanico9 = Mecanico(id="90123456", nombre="Mecanico9", fecha_nacimiento="09/09/1998", nacionalidad="Nacionalidad9", salario=90000, score=94)
-    # mecanico10 = Mecanico(id="01234567", nombre="Mecanico10", fecha_nacimiento="10/10/1999", nacionalidad="Nacionalidad10", salario=95000, score=87)
-    # mecanico11 = Mecanico(id="12345000", nombre="Mecanico11", fecha_nacimiento="11/11/2000", nacionalidad="Nacionalidad11", salario=100000, score=89)
-    # mecanico12 = Mecanico(id="23456000", nombre="Mecanico12", fecha_nacimiento="12/12/2001", nacionalidad="Nacionalidad12", salario=105000, score=82)
-    # mecanico13 = Mecanico(id="34567000", nombre="Mecanico13", fecha_nacimiento="13/01/2002", nacionalidad="Nacionalidad13", salario=110000, score=90)
-    # mecanico14 = Mecanico(id="45678000", nombre="Mecanico14", fecha_nacimiento="14/02/2003", nacionalidad="Nacionalidad14", salario=115000, score=93)
-    # mecanico15 = Mecanico(id="56789000", nombre="Mecanico15", fecha_nacimiento="15/03/2004", nacionalidad="Nacionalidad15", salario=120000, score=86)
-    # mecanico16 = Mecanico(id="67890000", nombre="Mecanico16", fecha_nacimiento="16/04/2005", nacionalidad="Nacionalidad16", salario=125000, score=84)
-    # director_equipo1 = DirectorEquipo(id="12345678", nombre="Director1", fecha_nacimiento="01/01/1980", nacionalidad="Nacionalidad1", salario=150000)
-    # director_equipo2 = DirectorEquipo(id="23456789", nombre="Director2", fecha_nacimiento="02/02/1981", nacionalidad="Nacionalidad2", salario=160000)
-    # auto1 = Auto(modelo="Modelo1", año=2020, score=90)
-    # auto2 = Auto(modelo="Modelo2", año=2021, score=85)
-    # pilotos = [piloto1, piloto2, piloto3, piloto4, piloto5, piloto6, piloto7, piloto8, piloto9, piloto10, piloto11, piloto12, piloto13, piloto14, piloto15, piloto16, piloto17, piloto18, piloto19, piloto20, piloto21, piloto22, piloto23, piloto24, piloto25, piloto26, piloto27, piloto28, piloto29, piloto30]
-    # mecanicos = [mecanico1, mecanico2, mecanico3, mecanico4, mecanico5, mecanico6, mecanico7, mecanico8, mecanico9, mecanico10, mecanico11, mecanico12, mecanico13, mecanico14, mecanico15, mecanico16]
-    # autos = [auto1, auto2]
+    piloto1 = Piloto(id="12345678", nombre="Piloto1", fecha_nacimiento="01/01/1990", nacionalidad="Nacionalidad1", salario=50000, score=85, num_auto=1, puntaje_campeonato=0, lesionado=False, esReserva=False)
+    piloto2 = Piloto(id="23456789", nombre="Piloto2", fecha_nacimiento="02/02/1991", nacionalidad="Nacionalidad2", salario=55000, score=78, num_auto=2, puntaje_campeonato=0, lesionado=False, esReserva=False)
+    piloto3 = Piloto(id="34567890", nombre="Piloto3", fecha_nacimiento="03/03/1992", nacionalidad="Nacionalidad3", salario=60000, score=92, num_auto=3, puntaje_campeonato=0, lesionado=False, esReserva=True)
+    piloto4 = Piloto(id="45678901", nombre="Piloto4", fecha_nacimiento="04/04/1993", nacionalidad="Nacionalidad4", salario=65000, score=88, num_auto=4, puntaje_campeonato=0, lesionado=False, esReserva=False)
+    piloto5 = Piloto(id="56789012", nombre="Piloto5", fecha_nacimiento="05/05/1994", nacionalidad="Nacionalidad5", salario=70000, score=75, num_auto=5, puntaje_campeonato=0, lesionado=False, esReserva=False)
+    piloto6 = Piloto(id="67890123", nombre="Piloto6", fecha_nacimiento="06/06/1995", nacionalidad="Nacionalidad6", salario=75000, score=95, num_auto=6, puntaje_campeonato=0, lesionado=False, esReserva=True)
+    mecanico1 = Mecanico(id="12345678", nombre="Mecanico1", fecha_nacimiento="01/01/1990", nacionalidad="Nacionalidad1", salario=50000, score=85)
+    mecanico2 = Mecanico(id="23456789", nombre="Mecanico2", fecha_nacimiento="02/02/1991", nacionalidad="Nacionalidad2", salario=55000, score=78)
+    mecanico3 = Mecanico(id="34567890", nombre="Mecanico3", fecha_nacimiento="03/03/1992", nacionalidad="Nacionalidad3", salario=60000, score=92)
+    mecanico4 = Mecanico(id="45678901", nombre="Mecanico4", fecha_nacimiento="04/04/1993", nacionalidad="Nacionalidad4", salario=65000, score=88)
+    mecanico5 = Mecanico(id="56789012", nombre="Mecanico5", fecha_nacimiento="05/05/1994", nacionalidad="Nacionalidad5", salario=70000, score=75)
+    mecanico6 = Mecanico(id="67890123", nombre="Mecanico6", fecha_nacimiento="06/06/1995", nacionalidad="Nacionalidad6", salario=75000, score=91)
+    mecanico7 = Mecanico(id="78901234", nombre="Mecanico7", fecha_nacimiento="07/07/1996", nacionalidad="Nacionalidad7", salario=80000, score=83)
+    mecanico8 = Mecanico(id="89012345", nombre="Mecanico8", fecha_nacimiento="08/08/1997", nacionalidad="Nacionalidad8", salario=85000, score=79)
+    mecanico9 = Mecanico(id="90123456", nombre="Mecanico9", fecha_nacimiento="09/09/1998", nacionalidad="Nacionalidad9", salario=90000, score=94)
+    mecanico10 = Mecanico(id="01234567", nombre="Mecanico10", fecha_nacimiento="10/10/1999", nacionalidad="Nacionalidad10", salario=95000, score=87)
+    mecanico11 = Mecanico(id="12345000", nombre="Mecanico11", fecha_nacimiento="11/11/2000", nacionalidad="Nacionalidad11", salario=100000, score=89)
+    mecanico12 = Mecanico(id="23456000", nombre="Mecanico12", fecha_nacimiento="12/12/2001", nacionalidad="Nacionalidad12", salario=105000, score=82)
+    mecanico13 = Mecanico(id="34567000", nombre="Mecanico13", fecha_nacimiento="13/01/2002", nacionalidad="Nacionalidad13", salario=110000, score=90)
+    mecanico14 = Mecanico(id="45678000", nombre="Mecanico14", fecha_nacimiento="14/02/2003", nacionalidad="Nacionalidad14", salario=115000, score=93)
+    mecanico15 = Mecanico(id="56789000", nombre="Mecanico15", fecha_nacimiento="15/03/2004", nacionalidad="Nacionalidad15", salario=120000, score=86)
+    mecanico16 = Mecanico(id="67890000", nombre="Mecanico16", fecha_nacimiento="16/04/2005", nacionalidad="Nacionalidad16", salario=125000, score=84)
+    director_equipo1 = DirectorEquipo(id="12345678", nombre="Director1", fecha_nacimiento="01/01/1980", nacionalidad="Nacionalidad1", salario=150000)
+    director_equipo2 = DirectorEquipo(id="23456789", nombre="Director2", fecha_nacimiento="02/02/1981", nacionalidad="Nacionalidad2", salario=160000)
+    auto1 = Auto(modelo="Modelo1", año=2020, score=90, num_auto=1)
+    auto2 = Auto(modelo="Modelo2", año=2021, score=85, num_auto=2)
+    auto3 = Auto(modelo="Modelo3", año=2010, score=95, num_auto=3)
+    auto4 = Auto(modelo="Modelo4", año=2011, score=70, num_auto=4)
+    auto5 = Auto(modelo="Modelo5", año=2012, score=50, num_auto=5)
+    auto6 = Auto(modelo="Modelo6", año=2013, score=40, num_auto=6)
+    pilotos = [piloto1, piloto2, piloto3, piloto4, piloto5, piloto6]
+    mecanicos = [mecanico1, mecanico2, mecanico3, mecanico4, mecanico5, mecanico6, mecanico7, mecanico8, mecanico9, mecanico10, mecanico11, mecanico12, mecanico13, mecanico14, mecanico15, mecanico16]
+    autos = [auto1, auto2, auto3, auto4, auto5, auto6]
     
     pilotos = []
     pilotosReserva =[]
@@ -91,7 +96,11 @@ class SimulacionDeCarrera:
                 if not self.validar_num_entero_1_99(score):
                     raise InformacionInvalida(400, "Dato ingresado incorrecto. Score no puede estar vacío y debe ser un número entero en rango 1-99.")
                 
-                autoCreado = Auto(modelo,anio, score)
+                num_auto = input("Ingrese numero de auto: ")
+                if not self.validar_num_entero_1_99(num_auto):
+                    raise InformacionInvalida(400, "Dato ingresado incorrecto. Numero de auto no puede estar vacío y debe ser un número entero en rango 1-99.")
+                
+                autoCreado = Auto(modelo,anio, score, num_auto)
                 self.autos.append(autoCreado)
                 print(f"Auto {modelo}, {anio} dado de alta con éxito.")
                 break
@@ -158,8 +167,7 @@ class SimulacionDeCarrera:
             print("La cédula no corresponde a un director disponible.")
             return
         director_equipo = next(d for d in self.directores if d.cedula == idDir)
-        
-        
+          
         print("Mecánicos:", [m.cedula for m in self.mecanicos])
         
         mecanicos_equipo = []
@@ -170,8 +178,6 @@ class SimulacionDeCarrera:
                 return
             mecanico = next(m for m in self.mecanicos if m.cedula == cedula_mecanico)
             mecanicos_equipo.append(mecanico)
-
-    
 
         print("Equipo dado de alta con éxito.")
         
@@ -202,32 +208,36 @@ class SimulacionDeCarrera:
      
      
     def simular_carrera(self):
-        # Simulamos distintos eventos durante la carrera
         for piloto in self.pilotos:
-            if random.random() < 0.1:  # 10% de probabilidad de lesión
-                piloto.lesionado = True
-            if random.random() < 0.2:  # 20% de probabilidad de abandono
-                piloto.lesionado = True
-            if random.random() < 0.3:  # 30% de probabilidad de error en pits
-                piloto.recibir_penalidad_pits()
-            if random.random() < 0.15:  # 15% de probabilidad de penalidad por norma
-                piloto.recibir_penalidad_norma()
+                if random.random() < 0.1:  # 10% de probabilidad de lesión
+                    piloto.lesionado = True
+                if random.random() < 0.2:  # 20% de probabilidad de abandono
+                    piloto.lesionado = True
+                if random.random() < 0.3:  # 30% de probabilidad de error en pits
+                 #   if auto.num_auto == piloto.num_auto():
+                    piloto.recibir_penalidad_pits()
+                if random.random() < 0.15:  # 15% de probabilidad de penalidad por norma
+                    piloto.recibir_penalidad_norma()
 
         # Calcular score final para cada piloto
         for piloto in self.pilotos:
-            piloto.calcular_score_final()
+            for auto in self.autos:
+                if auto.num_auto == piloto.num_auto:
+                    piloto.calcular_score_final(auto.score)
 
         # Ordenar los pilotos por score_final de manera descendente
-        self.pilotos.sort(key=lambda x: x.score_final, reverse=True)
+        self.pilotos.sort(key=lambda x: x.puntaje_campeonato, reverse=True)
 
         # Adjudicar puntos a los pilotos
         puntos = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
         for i, piloto in enumerate(self.pilotos):
-            piloto.equipo.puntuar_equipo(puntos[i])
+            piloto.asignar_puntaje(puntos[i])
 
+        # Imprimir los puntajes de todos los pilotos
+        for piloto in self.pilotos:
+        #    print(f"Piloto {piloto.nombre}: Puntaje Campeonato = {piloto.puntaje_campeonato}")
 
-     
-     
+            print(piloto._nacionalidad)
      
      
         
