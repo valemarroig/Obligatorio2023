@@ -5,7 +5,8 @@ from Entities.DirectorEquipo import DirectorEquipo
 from Entities.Auto import Auto
 from Entities.Equipo import Equipo
 from Exceptions.InformaciónInválida import InformacionInvalida
-import re
+import random
+#import re
 
 class SimulacionDeCarrera:
     # para hacer pruebas: seleccionar y ctrl+/ para descomentar
@@ -170,9 +171,7 @@ class SimulacionDeCarrera:
             mecanico = next(m for m in self.mecanicos if m.cedula == cedula_mecanico)
             mecanicos_equipo.append(mecanico)
 
-        # Agregar el equipo a la lista de equipos
-        nuevo_equipo = Equipo(nombre_equipo, [auto], pilotos_equipo, [piloto_reserva], mecanicos_equipo, director_equipo)
-        self.equipos.append(nuevo_equipo)
+    
 
         print("Equipo dado de alta con éxito.")
         
@@ -188,8 +187,49 @@ class SimulacionDeCarrera:
             autos_equipo.append(auto)
         # Falta tomar todos los datos elegidos y hacer append a la lista de equipos con un nuevo equipo generado (en base a los parametros)
         
-            
+        director_equipo = []
+        cedula_director = input(f"Ingrese cedula del director {i + 1}: ")
+        if cedula_director not in [m.cedula for m in self.directores]:
+                print("La cédula no corresponde a un director disponible.")
+                return
+        director = next(m for m in self.directores if m.cedula == cedula_director)
+        director_equipo.append(director)
+        
+        
+        nuevo_equipo = Equipo(nombre_equipo, [auto], pilotos_equipo, [piloto_reserva], mecanicos_equipo, director_equipo)
+        self.equipos.append(nuevo_equipo)   
 
+     
+     
+    def simular_carrera(self):
+        # Simulamos distintos eventos durante la carrera
+        for piloto in self.pilotos:
+            if random.random() < 0.1:  # 10% de probabilidad de lesión
+                piloto.lesionado = True
+            if random.random() < 0.2:  # 20% de probabilidad de abandono
+                piloto.lesionado = True
+            if random.random() < 0.3:  # 30% de probabilidad de error en pits
+                piloto.recibir_penalidad_pits()
+            if random.random() < 0.15:  # 15% de probabilidad de penalidad por norma
+                piloto.recibir_penalidad_norma()
+
+        # Calcular score final para cada piloto
+        for piloto in self.pilotos:
+            piloto.calcular_score_final()
+
+        # Ordenar los pilotos por score_final de manera descendente
+        self.pilotos.sort(key=lambda x: x.score_final, reverse=True)
+
+        # Adjudicar puntos a los pilotos
+        puntos = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
+        for i, piloto in enumerate(self.pilotos):
+            piloto.equipo.puntuar_equipo(puntos[i])
+
+
+     
+     
+     
+     
         
         
         
